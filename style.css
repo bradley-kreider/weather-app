@@ -310,6 +310,8 @@ body {
   flex-shrink: 0;
 }
 .day-hour-row:last-child { border-bottom: none; }
+.day-hour-row.current-hour { background: rgba(0,140,255,0.1); }
+.day-hour-row.current-hour .dh-time { color: var(--accent); font-weight: 600; }
 .dh-time { color: var(--muted); font-size: 0.78rem; }
 .dh-icon { font-size: 1.1rem; }
 .dh-temp { font-weight: 600; }

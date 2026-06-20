@@ -147,13 +147,24 @@ function buildDayHourly(data, dayIdx) {
   const shown = [];
   for(let i=0;i<h.time.length;i++) if(h.time[i].startsWith(dayDate)) shown.push(i);
   if(!shown.length) return null;
+
+  const now = new Date();
   const ul = document.createElement('div');
   ul.className = 'day-hourly day-hourly-scroll';
+
+  // For today, find which row is the current hour so we can scroll to it on open
+  let currentRowEl = null;
+
   shown.forEach(i => {
     const wx   = wmo(h.weather_code[i]);
     const rain = h.precipitation_probability[i];
-    const row  = document.createElement('div');
-    row.className = 'day-hour-row';
+    const slotTime = new Date(h.time[i]);
+    const isCurrent = dayIdx === 0
+      && slotTime.getHours() === now.getHours()
+      && slotTime.toDateString() === now.toDateString();
+
+    const row = document.createElement('div');
+    row.className = 'day-hour-row' + (isCurrent ? ' current-hour' : '');
     row.innerHTML = `
       <span class="dh-time">${formatHour(h.time[i])}</span>
       <span class="dh-icon">${wx.emoji}</span>
@@ -162,8 +173,12 @@ function buildDayHourly(data, dayIdx) {
       <span class="dh-wind">${Math.round(h.wind_speed_10m[i])} mph</span>
       <span class="dh-rain${rain>0?' has-rain':''}">${rain>0?rain+'%':'—'}</span>
     `;
+    if(isCurrent) currentRowEl = row;
     ul.appendChild(row);
   });
+
+  // Store reference so the accordion toggle can scroll to it after opening
+  ul._currentRow = currentRowEl;
   return ul;
 }
 
@@ -231,14 +246,22 @@ function buildPanel(loc, data, locIdx) {
       </div>
       <div class="day-detail"></div>
     `;
-    const detail  = wrap.querySelector('.day-detail');
+    const detail   = wrap.querySelector('.day-detail');
     const hourlyEl = buildDayHourly(data, i);
     if(hourlyEl) detail.appendChild(hourlyEl);
     const row = wrap.querySelector('.day-row');
     const toggle = () => {
       const opening = !wrap.classList.contains('open');
       dailyList.querySelectorAll('.day-wrapper.open').forEach(w=>w.classList.remove('open'));
-      if(opening) wrap.classList.add('open');
+      if(opening) {
+        wrap.classList.add('open');
+        // After the max-height transition starts, scroll hourly list to current hour
+        if(hourlyEl?._currentRow) {
+          setTimeout(() => {
+            hourlyEl._currentRow.scrollIntoView({ block: 'start', behavior: 'instant' });
+          }, 50);
+        }
+      }
     };
     row.addEventListener('click', toggle);
     row.addEventListener('keydown', e=>{if(e.key==='Enter'||e.key===' ')toggle();});
