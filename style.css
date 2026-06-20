@@ -128,8 +128,12 @@ body {
 #swipe-track {
   display: flex;
   height: 100%;
-  transition: transform 0.35s cubic-bezier(0.4,0,0.2,1);
   will-change: transform;
+  transform: translateX(0);
+  /* transition only applied when snapping, not during drag */
+}
+#swipe-track.snap {
+  transition: transform 0.28s cubic-bezier(0.25,0.46,0.45,0.94);
 }
 
 /* ── City panel (one per location) ─────────────────────────────────── */

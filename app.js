@@ -300,9 +300,12 @@ function panelWidth() {
 function goTo(idx, animate=true) {
   currentIdx = idx;
   saveActiveIdx(idx);
-  if(!animate) track.style.transition = 'none';
+  if(animate) {
+    track.classList.add('snap');
+  } else {
+    track.classList.remove('snap');
+  }
   track.style.transform = `translateX(${-idx * panelWidth()}px)`;
-  if(!animate) requestAnimationFrame(()=>{ track.style.transition=''; });
   updateDots();
 }
 
@@ -345,43 +348,74 @@ async function buildAllPanels() {
   });
 
   updateDots();
+  lastFetch = Date.now();
 }
 
 // ── Swipe gesture ──────────────────────────────────────────────────────────
 function initSwipe() {
   const vp = $('swipe-viewport');
-  let startX=0, startY=0, dx=0, dragging=false, lockAxis=null;
+  let startX=0, startY=0, dx=0, lastX=0, lastT=0, velX=0;
+  let dragging=false, lockAxis=null, rafId=null;
 
   vp.addEventListener('touchstart', e=>{
     startX = e.touches[0].clientX;
     startY = e.touches[0].clientY;
-    dx=0; dragging=true; lockAxis=null;
+    lastX  = startX;
+    lastT  = e.timeStamp;
+    dx=0; velX=0; dragging=true; lockAxis=null;
+    track.classList.remove('snap');
   },{passive:true});
 
   vp.addEventListener('touchmove', e=>{
     if(!dragging) return;
     const mx = e.touches[0].clientX - startX;
     const my = e.touches[0].clientY - startY;
+
     if(!lockAxis) {
-      lockAxis = Math.abs(mx)>Math.abs(my) ? 'x' : 'y';
+      if(Math.abs(mx) > Math.abs(my) + 4) lockAxis = 'x';
+      else if(Math.abs(my) > Math.abs(mx) + 4) lockAxis = 'y';
+      else return;
     }
     if(lockAxis==='y') return;
     e.preventDefault();
+
+    // Track velocity (px/ms) over last frame
+    const now = e.timeStamp;
+    velX = (e.touches[0].clientX - lastX) / (now - lastT + 1);
+    lastX = e.touches[0].clientX;
+    lastT = now;
     dx = mx;
-    const base = -currentIdx * panelWidth();
-    track.style.transition = 'none';
-    track.style.transform = `translateX(${base+dx}px)`;
+
+    if(rafId) cancelAnimationFrame(rafId);
+    rafId = requestAnimationFrame(()=>{
+      const base = -currentIdx * panelWidth();
+      // Rubber-band resistance at edges
+      const locs = allLocations();
+      let offset = base + dx;
+      if(dx > 0 && currentIdx === 0) offset = base + dx * 0.2;
+      if(dx < 0 && currentIdx === locs.length-1) offset = base + dx * 0.2;
+      track.style.transform = `translateX(${offset}px)`;
+    });
   },{passive:false});
 
-  vp.addEventListener('touchend', ()=>{
-    if(!dragging||lockAxis!=='x') { dragging=false; return; }
+  const onEnd = () => {
+    if(!dragging) return;
     dragging=false;
+    if(rafId) { cancelAnimationFrame(rafId); rafId=null; }
+    if(lockAxis !== 'x') return;
+
     const locs = allLocations();
-    const threshold = panelWidth() * 0.25;
-    if(dx < -threshold && currentIdx < locs.length-1) goTo(currentIdx+1);
-    else if(dx > threshold && currentIdx > 0) goTo(currentIdx-1);
-    else goTo(currentIdx); // snap back
-  });
+    const pw = panelWidth();
+    // Snap by distance OR flick velocity (>0.3 px/ms counts as a flick)
+    const flickNext = velX < -0.3 && currentIdx < locs.length-1;
+    const flickPrev = velX >  0.3 && currentIdx > 0;
+    if((dx < -pw * 0.2 || flickNext) && currentIdx < locs.length-1) goTo(currentIdx+1);
+    else if((dx > pw * 0.2 || flickPrev) && currentIdx > 0) goTo(currentIdx-1);
+    else goTo(currentIdx);
+  };
+
+  vp.addEventListener('touchend',    onEnd, {passive:true});
+  vp.addEventListener('touchcancel', onEnd, {passive:true});
 }
 
 // ── Geolocation (one-time cache) ───────────────────────────────────────────
@@ -434,10 +468,14 @@ async function init() {
 
 $('retry-btn').addEventListener('click', init);
 
-// Refresh weather data when app comes back to foreground
+// Refresh weather quietly in background when app comes back to foreground
+// Only rebuild if data is stale (>10 min old)
+let lastFetch = 0;
 document.addEventListener('visibilitychange', ()=>{
   if(!document.hidden && screens.main.classList.contains('active')) {
-    buildAllPanels().then(()=>goTo(currentIdx, false));
+    if(Date.now() - lastFetch > 10 * 60 * 1000) {
+      buildAllPanels().then(()=>goTo(currentIdx, false));
+    }
   }
 });
 
