@@ -258,7 +258,8 @@ function buildPanel(loc, data, locIdx) {
         // After the max-height transition starts, scroll hourly list to current hour
         if(hourlyEl?._currentRow) {
           setTimeout(() => {
-            hourlyEl._currentRow.scrollIntoView({ block: 'start', behavior: 'instant' });
+            const row = hourlyEl._currentRow;
+            hourlyEl.scrollTop = row.offsetTop - row.offsetHeight;
           }, 50);
         }
       }
