@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#0f1117" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <title>Weather</title>
+  <link rel="manifest" href="manifest.json" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div id="app">
+    <div id="loading" class="screen active">
+      <div class="spinner"></div>
+      <p>Getting your location…</p>
+    </div>
+
+    <div id="error" class="screen">
+      <div class="error-icon">⚠</div>
+      <p id="error-msg">Something went wrong.</p>
+      <button id="retry-btn">Try Again</button>
+    </div>
+
+    <div id="main" class="screen">
+      <!-- Header -->
+      <header>
+        <div id="location-name">—</div>
+        <div id="last-updated">—</div>
+      </header>
+
+      <!-- Current conditions -->
+      <section class="current">
+        <div class="current-top">
+          <div class="temp-block">
+            <span id="temp">—</span>
+            <span class="unit">°F</span>
+          </div>
+          <div class="condition-block">
+            <div id="weather-icon" class="wx-icon">—</div>
+            <div id="condition">—</div>
+            <div id="feels-like">Feels like —</div>
+          </div>
+        </div>
+        <div class="current-details">
+          <div class="detail">
+            <span class="label">Humidity</span>
+            <span id="humidity">—</span>
+          </div>
+          <div class="detail">
+            <span class="label">Wind</span>
+            <span id="wind">—</span>
+          </div>
+          <div class="detail">
+            <span class="label">UV Index</span>
+            <span id="uv">—</span>
+          </div>
+          <div class="detail">
+            <span class="label">Rain</span>
+            <span id="precip">—</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Hourly forecast -->
+      <section class="section-block">
+        <h2>Next 24 Hours</h2>
+        <div id="hourly" class="hourly-scroll"></div>
+      </section>
+
+      <!-- 7-day forecast -->
+      <section class="section-block">
+        <h2>7-Day Forecast</h2>
+        <div id="daily" class="daily-list"></div>
+      </section>
+
+      <footer>
+        <span>Data: Open-Meteo · <a href="https://open-meteo.com" target="_blank">open-meteo.com</a></span>
+      </footer>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/sw.js');
+    }
+  </script>
+</body>
+</html>
