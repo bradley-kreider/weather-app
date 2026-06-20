@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="theme-color" content="#0f1117" />
+  <meta name="theme-color" content="#010d1a" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="mobile-web-app-capable" content="yes" />
   <title>Weather</title>
@@ -11,23 +11,19 @@
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <!-- Location drawer — lives outside screens so it's always accessible -->
-  <div id="loc-drawer" class="loc-drawer" aria-hidden="true">
-    <div class="loc-drawer-inner">
-      <div class="loc-drawer-header">
-        <span>Locations</span>
+
+  <!-- Add location bottom sheet -->
+  <div id="sheet-overlay" class="sheet-overlay"></div>
+  <div id="add-sheet" class="add-sheet">
+    <div class="sheet-handle"></div>
+    <div class="sheet-inner">
+      <div class="sheet-search-row">
+        <input id="loc-search" type="text" placeholder="Search city or zip…" autocomplete="off" />
         <button id="loc-close-btn" aria-label="Close">✕</button>
       </div>
-      <div class="loc-search-row">
-        <input id="loc-search" type="text" placeholder="Search city…" autocomplete="off" />
-        <button id="loc-search-btn">Search</button>
-      </div>
       <div id="loc-results" class="loc-results"></div>
-      <div class="loc-saved-label">Saved Locations</div>
-      <div id="loc-saved" class="loc-saved"></div>
     </div>
   </div>
-  <div id="loc-overlay" class="loc-overlay"></div>
 
   <div id="app">
     <div id="loading" class="screen active">
@@ -40,68 +36,23 @@
       <p id="error-msg">Something went wrong.</p>
       <div class="error-actions">
         <button id="retry-btn">Try Again</button>
-        <button id="add-location-btn">Add Location Manually</button>
+        <button id="add-location-btn">Add Location</button>
       </div>
     </div>
 
     <div id="main" class="screen">
-      <!-- Header -->
-      <header>
-        <div class="header-top">
-          <div id="location-name">—</div>
-          <button id="locations-btn" aria-label="Manage locations">&#9776;</button>
+      <!-- Top bar: dots + plus -->
+      <div class="top-bar">
+        <div id="city-dots" class="city-dots"></div>
+        <button id="add-btn" aria-label="Add location">+</button>
+      </div>
+
+      <!-- Swipe viewport -->
+      <div id="swipe-viewport">
+        <div id="swipe-track">
+          <!-- city panels injected here by JS -->
         </div>
-        <div id="last-updated">—</div>
-      </header>
-
-      <!-- Current conditions -->
-      <section class="current">
-        <div class="current-top">
-          <div class="temp-block">
-            <span id="temp">—</span>
-            <span class="unit">°F</span>
-          </div>
-          <div class="condition-block">
-            <div id="weather-icon" class="wx-icon">—</div>
-            <div id="condition">—</div>
-            <div id="feels-like">Feels like —</div>
-          </div>
-        </div>
-        <div class="current-details">
-          <div class="detail">
-            <span class="label">Humidity</span>
-            <span id="humidity">—</span>
-          </div>
-          <div class="detail">
-            <span class="label">Wind</span>
-            <span id="wind">—</span>
-          </div>
-          <div class="detail">
-            <span class="label">UV Index</span>
-            <span id="uv">—</span>
-          </div>
-          <div class="detail">
-            <span class="label">Rain</span>
-            <span id="precip">—</span>
-          </div>
-        </div>
-      </section>
-
-      <!-- Hourly forecast -->
-      <section class="section-block">
-        <h2>Next 24 Hours</h2>
-        <div id="hourly" class="hourly-scroll"></div>
-      </section>
-
-      <!-- 7-day forecast -->
-      <section class="section-block">
-        <h2>7-Day Forecast</h2>
-        <div id="daily" class="daily-list"></div>
-      </section>
-
-      <footer>
-        <span>Data: Open-Meteo · <a href="https://open-meteo.com" target="_blank">open-meteo.com</a></span>
-      </footer>
+      </div>
     </div>
   </div>
 
