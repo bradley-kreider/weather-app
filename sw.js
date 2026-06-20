@@ -1,4 +1,4 @@
-const CACHE = 'weather-v3';
+const CACHE = 'weather-v4';
 const SHELL = ['./', './index.html', './style.css', './app.js', './manifest.json'];
 
 self.addEventListener('install', e => {

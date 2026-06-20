@@ -14,27 +14,24 @@
   --font: 'Segoe UI', system-ui, -apple-system, sans-serif;
 }
 
-html, body {
-  height: 100%;
-  background: var(--bg);
-  color: var(--text);
-  font-family: var(--font);
-  font-size: 16px;
-  -webkit-font-smoothing: antialiased;
-}
-
-/* Deep Ocean gradient orbs */
-body::before {
-  content: '';
-  position: fixed;
-  inset: 0;
+html {
+  min-height: 100%;
   background:
     radial-gradient(ellipse at 15% 50%, rgba(0,80,200,0.6) 0%, transparent 50%),
     radial-gradient(ellipse at 85% 20%, rgba(0,180,220,0.4) 0%, transparent 45%),
     radial-gradient(ellipse at 50% 100%, rgba(0,40,120,0.55) 0%, transparent 45%),
-    radial-gradient(ellipse at 70% 60%, rgba(0,100,180,0.3) 0%, transparent 40%);
-  pointer-events: none;
-  z-index: 0;
+    radial-gradient(ellipse at 70% 60%, rgba(0,100,180,0.3) 0%, transparent 40%),
+    var(--bg);
+  background-attachment: fixed;
+}
+
+body {
+  min-height: 100%;
+  background: transparent;
+  color: var(--text);
+  font-family: var(--font);
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
 }
 
 #app {
