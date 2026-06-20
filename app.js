@@ -286,11 +286,16 @@ function buildPanel(loc, data, locIdx) {
 const track = $('swipe-track');
 let currentIdx = 0;
 
+function panelWidth() {
+  const panel = track.querySelector('.city-panel');
+  return panel ? panel.offsetWidth : window.innerWidth;
+}
+
 function goTo(idx, animate=true) {
   currentIdx = idx;
   saveActiveIdx(idx);
   if(!animate) track.style.transition = 'none';
-  track.style.transform = `translateX(${-idx * 100}vw)`;
+  track.style.transform = `translateX(${-idx * panelWidth()}px)`;
   if(!animate) requestAnimationFrame(()=>{ track.style.transition=''; });
   updateDots();
 }
@@ -351,7 +356,7 @@ function initSwipe() {
     if(lockAxis==='y') return;
     e.preventDefault();
     dx = mx;
-    const base = -currentIdx * window.innerWidth;
+    const base = -currentIdx * panelWidth();
     track.style.transition = 'none';
     track.style.transform = `translateX(${base+dx}px)`;
   },{passive:false});
@@ -360,7 +365,7 @@ function initSwipe() {
     if(!dragging||lockAxis!=='x') { dragging=false; return; }
     dragging=false;
     const locs = allLocations();
-    const threshold = window.innerWidth * 0.25;
+    const threshold = panelWidth() * 0.25;
     if(dx < -threshold && currentIdx < locs.length-1) goTo(currentIdx+1);
     else if(dx > threshold && currentIdx > 0) goTo(currentIdx-1);
     else goTo(currentIdx); // snap back

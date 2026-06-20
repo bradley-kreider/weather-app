@@ -76,7 +76,8 @@ body {
 /* ── Top bar ────────────────────────────────────────────────────────── */
 .top-bar {
   position: fixed;
-  top: 0; left: 0; right: 0;
+  top: 0; left: 50%; transform: translateX(-50%);
+  width: 100%; max-width: 480px;
   z-index: 5;
   display: flex;
   align-items: center;
@@ -150,8 +151,16 @@ body {
   overflow-x: hidden;
   scrollbar-width: none;
   padding-bottom: 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 .city-panel::-webkit-scrollbar { display: none; }
+
+.city-panel > * {
+  width: 100%;
+  max-width: 480px;
+}
 
 /* ── Header inside panel ────────────────────────────────────────────── */
 .panel-header {
@@ -355,7 +364,8 @@ body {
 
 .add-sheet {
   position: fixed;
-  bottom: 0; left: 0; right: 0;
+  bottom: 0; left: 50%; transform: translateX(-50%) translateY(100%);
+  width: 100%; max-width: 480px;
   background: rgba(1,18,40,0.92);
   backdrop-filter: blur(28px);
   -webkit-backdrop-filter: blur(28px);
@@ -366,7 +376,7 @@ body {
   transition: transform 0.3s cubic-bezier(0.4,0,0.2,1);
   padding-bottom: env(safe-area-inset-bottom, 16px);
 }
-.add-sheet.open { transform: translateY(0); }
+.add-sheet.open { transform: translateX(-50%) translateY(0); }
 
 .sheet-handle {
   width: 36px; height: 4px;
