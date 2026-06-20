@@ -1,14 +1,15 @@
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
-  --bg: #0f1117;
-  --surface: #181c27;
-  --surface2: #1e2335;
-  --border: #2a2f45;
-  --text: #e8eaf0;
-  --muted: #7a80a0;
-  --accent: #4fa3e0;
-  --accent-warm: #e07a4f;
+  --bg: #010d1a;
+  --surface: rgba(0,100,200,0.1);
+  --surface2: rgba(0,120,220,0.16);
+  --border: rgba(0,160,255,0.18);
+  --border-accent: rgba(0,180,255,0.5);
+  --text: #dff0ff;
+  --muted: #5a9ec0;
+  --accent: #00b4ff;
+  --accent-warm: #40c8ff;
   --radius: 16px;
   --font: 'Segoe UI', system-ui, -apple-system, sans-serif;
 }
@@ -22,11 +23,27 @@ html, body {
   -webkit-font-smoothing: antialiased;
 }
 
+/* Deep Ocean gradient orbs */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at 15% 50%, rgba(0,80,200,0.6) 0%, transparent 50%),
+    radial-gradient(ellipse at 85% 20%, rgba(0,180,220,0.4) 0%, transparent 45%),
+    radial-gradient(ellipse at 50% 100%, rgba(0,40,120,0.55) 0%, transparent 45%),
+    radial-gradient(ellipse at 70% 60%, rgba(0,100,180,0.3) 0%, transparent 40%);
+  pointer-events: none;
+  z-index: 0;
+}
+
 #app {
   max-width: 480px;
   margin: 0 auto;
   min-height: 100dvh;
   padding: 0 0 32px;
+  position: relative;
+  z-index: 1;
 }
 
 /* Screens */
@@ -68,11 +85,14 @@ html, body {
 }
 #retry-btn {
   background: var(--accent);
-  color: #fff;
+  color: #001828;
+  font-weight: 600;
 }
 #add-location-btn {
-  background: var(--surface);
-  border: 1px solid var(--border);
+  background: rgba(0,100,200,0.14);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(0,160,255,0.22);
   color: var(--text);
 }
 
@@ -129,8 +149,10 @@ header {
   top: 0; right: 0;
   width: min(340px, 92vw);
   height: 100dvh;
-  background: var(--surface);
-  border-left: 1px solid var(--border);
+  background: rgba(1,20,40,0.82);
+  backdrop-filter: blur(28px);
+  -webkit-backdrop-filter: blur(28px);
+  border-left: 1px solid rgba(0,160,255,0.2);
   z-index: 11;
   transform: translateX(100%);
   transition: transform 0.25s ease;
@@ -188,8 +210,9 @@ header {
   background: var(--accent);
   border: none;
   border-radius: 10px;
-  color: #fff;
+  color: #001828;
   font-size: 0.85rem;
+  font-weight: 600;
   padding: 10px 14px;
   cursor: pointer;
   white-space: nowrap;
@@ -357,8 +380,11 @@ header {
 }
 
 .detail {
-  background: var(--surface);
-  border: 1px solid var(--border);
+  background: rgba(0,100,200,0.12);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(0,160,255,0.2);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.08);
   border-radius: var(--radius);
   padding: 14px 16px;
   display: flex;
@@ -403,8 +429,11 @@ header {
 
 .hour-card {
   flex: 0 0 72px;
-  background: var(--surface);
-  border: 1px solid var(--border);
+  background: rgba(0,100,200,0.12);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(0,160,255,0.18);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.08);
   border-radius: var(--radius);
   padding: 14px 8px;
   display: flex;
@@ -416,7 +445,8 @@ header {
 
 .hour-card.now {
   border-color: var(--accent);
-  background: var(--surface2);
+  background: rgba(0,140,255,0.2);
+  box-shadow: 0 0 16px rgba(0,160,255,0.15);
 }
 
 .hour-time {
@@ -446,12 +476,16 @@ header {
 .day-wrapper {
   border-radius: var(--radius);
   overflow: hidden;
-  border: 1px solid var(--border);
-  background: var(--surface);
-  transition: border-color 0.2s;
+  border: 1px solid rgba(0,160,255,0.18);
+  background: rgba(0,100,200,0.12);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.07);
+  transition: border-color 0.2s, box-shadow 0.2s;
 }
 .day-wrapper.open {
   border-color: var(--accent);
+  box-shadow: 0 0 20px rgba(0,160,255,0.12);
 }
 
 .day-row {
