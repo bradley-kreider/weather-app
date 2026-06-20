@@ -145,12 +145,11 @@ async function fetchWeather(lat, lon) {
 function buildDayHourly(data, dayIdx) {
   const dayDate = data.daily.time[dayIdx];
   const h = data.hourly;
-  const slots = [];
-  for(let i=0;i<h.time.length;i++) if(h.time[i].startsWith(dayDate)) slots.push(i);
-  const shown = slots.filter((_,i)=>i%3===0);
+  const shown = [];
+  for(let i=0;i<h.time.length;i++) if(h.time[i].startsWith(dayDate)) shown.push(i);
   if(!shown.length) return null;
   const ul = document.createElement('div');
-  ul.className = 'day-hourly';
+  ul.className = 'day-hourly day-hourly-scroll';
   shown.forEach(i => {
     const wx   = wmo(h.weather_code[i]);
     const rain = h.precipitation_probability[i];
@@ -177,24 +176,6 @@ function buildPanel(loc, data, locIdx) {
   const c  = data.current;
   const wx = wmo(c.weather_code);
 
-  // Hourly HTML
-  const now = new Date();
-  let hourlyHTML = '';
-  let count = 0;
-  for(let i=0;i<data.hourly.time.length&&count<24;i++) {
-    if(new Date(data.hourly.time[i]) < now-1800000) continue;
-    const hw = wmo(data.hourly.weather_code[i]);
-    const rain = data.hourly.precipitation_probability[i];
-    hourlyHTML += `
-      <div class="hour-card${count===0?' now':''}">
-        <div class="hour-time">${count===0?'Now':formatHour(data.hourly.time[i])}</div>
-        <div class="hour-icon">${hw.emoji}</div>
-        <div class="hour-temp">${Math.round(data.hourly.temperature_2m[i])}°</div>
-        <div class="hour-rain">${rain>0?rain+'%':''}</div>
-      </div>`;
-    count++;
-  }
-
   panel.innerHTML = `
     <div class="panel-header">
       <div class="panel-loc">${loc.name}</div>
@@ -218,10 +199,6 @@ function buildPanel(loc, data, locIdx) {
         <div class="detail"><span class="label">UV Index</span><span class="val">${Math.round(c.uv_index)} · ${uvLabel(c.uv_index)}</span></div>
         <div class="detail"><span class="label">Rain</span><span class="val">${c.precipitation_probability??0}%</span></div>
       </div>
-    </section>
-    <section class="section-block">
-      <h2>Next 24 Hours</h2>
-      <div class="hourly-scroll">${hourlyHTML}</div>
     </section>
     <section class="section-block">
       <h2>7-Day Forecast</h2>

@@ -233,40 +233,6 @@ body {
   margin-bottom: 12px;
 }
 
-/* ── Hourly ─────────────────────────────────────────────────────────── */
-.hourly-scroll {
-  display: flex;
-  gap: 10px;
-  overflow-x: auto;
-  padding-bottom: 8px;
-  scrollbar-width: none;
-}
-.hourly-scroll::-webkit-scrollbar { display: none; }
-
-.hour-card {
-  flex: 0 0 72px;
-  background: rgba(0,100,200,0.12);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(0,160,255,0.18);
-  box-shadow: inset 0 1px 0 rgba(255,255,255,0.08);
-  border-radius: var(--radius);
-  padding: 14px 8px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 8px;
-  font-size: 0.85rem;
-}
-.hour-card.now {
-  border-color: var(--accent);
-  background: rgba(0,140,255,0.2);
-  box-shadow: 0 0 16px rgba(0,160,255,0.15);
-}
-.hour-time { font-size: 0.75rem; color: var(--muted); }
-.hour-icon { font-size: 1.4rem; line-height: 1; }
-.hour-temp { font-weight: 600; }
-.hour-rain { font-size: 0.72rem; color: var(--accent); min-height: 1em; }
 
 /* ── Daily accordion ────────────────────────────────────────────────── */
 .daily-list { display: flex; flex-direction: column; gap: 6px; margin-top: 4px; }
@@ -306,10 +272,19 @@ body {
 .day-chevron { color: var(--muted); font-size: 1.1rem; transition: transform 0.2s; line-height: 1; }
 .day-wrapper.open .day-chevron { transform: rotate(90deg); }
 
-.day-detail { max-height: 0; overflow: hidden; transition: max-height 0.3s ease; }
-.day-wrapper.open .day-detail { max-height: 600px; }
+.day-detail { max-height: 0; overflow: hidden; transition: max-height 0.35s ease; }
+.day-wrapper.open .day-detail { max-height: 340px; }
 
-.day-hourly { border-top: 1px solid var(--border); display: flex; flex-direction: column; }
+.day-hourly {
+  border-top: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  max-height: 340px;
+  overflow-y: auto;
+  scrollbar-width: none;
+}
+.day-hourly::-webkit-scrollbar { display: none; }
+
 .day-hour-row {
   display: grid;
   grid-template-columns: 44px 28px 42px 1fr 54px 36px;
@@ -317,7 +292,8 @@ body {
   gap: 6px;
   padding: 10px 18px;
   font-size: 0.85rem;
-  border-bottom: 1px solid var(--border);
+  border-bottom: 1px solid rgba(0,160,255,0.08);
+  flex-shrink: 0;
 }
 .day-hour-row:last-child { border-bottom: none; }
 .dh-time { color: var(--muted); font-size: 0.78rem; }
