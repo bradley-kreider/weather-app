@@ -263,7 +263,7 @@ async function getWeather(lat, lon) {
       'wind_speed_10m','wind_direction_10m','weather_code',
       'uv_index','precipitation_probability',
     ].join(','),
-    hourly: ['temperature_2m','weather_code','precipitation_probability'].join(','),
+    hourly: ['temperature_2m','apparent_temperature','weather_code','precipitation_probability','wind_speed_10m'].join(','),
     daily: [
       'temperature_2m_max','temperature_2m_min',
       'weather_code','precipitation_probability_max',
@@ -312,15 +312,60 @@ function renderHourly(data) {
   }
 }
 
+function buildDayHourly(data, dayIndex) {
+  // Find hourly entries that belong to this calendar day
+  const dayDate = data.daily.time[dayIndex]; // "YYYY-MM-DD"
+  const hours = data.hourly;
+  const slots = [];
+  for (let i = 0; i < hours.time.length; i++) {
+    if (hours.time[i].startsWith(dayDate)) slots.push(i);
+  }
+
+  // Show every 3 hours (8 slots max keeps it concise)
+  const shown = slots.filter((_, idx) => idx % 3 === 0);
+
+  if (!shown.length) return null;
+
+  const ul = document.createElement('div');
+  ul.className = 'day-hourly';
+
+  shown.forEach(i => {
+    const wx = wmo(hours.weather_code[i]);
+    const rain = hours.precipitation_probability[i];
+    const wind = Math.round(hours.wind_speed_10m[i]);
+    const feels = Math.round(hours.apparent_temperature[i]);
+    const row = document.createElement('div');
+    row.className = 'day-hour-row';
+    row.innerHTML = `
+      <span class="dh-time">${formatHour(hours.time[i])}</span>
+      <span class="dh-icon">${wx.emoji}</span>
+      <span class="dh-temp">${Math.round(hours.temperature_2m[i])}°</span>
+      <span class="dh-feels">Feels ${feels}°</span>
+      <span class="dh-wind">${wind} mph</span>
+      <span class="dh-rain${rain > 0 ? ' has-rain' : ''}">${rain > 0 ? rain + '%' : '—'}</span>
+    `;
+    ul.appendChild(row);
+  });
+
+  return ul;
+}
+
 function renderDaily(data) {
   const daily = data.daily;
   const container = $('daily');
   container.innerHTML = '';
+
   for (let i = 0; i < daily.time.length; i++) {
     const wx = wmo(daily.weather_code[i]);
     const rain = daily.precipitation_probability_max[i];
+
+    const wrapper = document.createElement('div');
+    wrapper.className = 'day-wrapper';
+
     const row = document.createElement('div');
     row.className = 'day-row';
+    row.setAttribute('role', 'button');
+    row.setAttribute('tabindex', '0');
     row.innerHTML = `
       <div class="day-name">${formatDay(daily.time[i], i)}</div>
       <div class="day-icon">${wx.emoji}</div>
@@ -329,8 +374,30 @@ function renderDaily(data) {
         <span class="day-hi">${Math.round(daily.temperature_2m_max[i])}°</span>
         <span class="day-lo">${Math.round(daily.temperature_2m_min[i])}°</span>
       </div>
+      <div class="day-chevron">›</div>
     `;
-    container.appendChild(row);
+
+    const detail = document.createElement('div');
+    detail.className = 'day-detail';
+    const hourlyEl = buildDayHourly(data, i);
+    if (hourlyEl) detail.appendChild(hourlyEl);
+
+    function toggle() {
+      const isOpen = wrapper.classList.toggle('open');
+      // Close siblings
+      if (isOpen) {
+        container.querySelectorAll('.day-wrapper.open').forEach(w => {
+          if (w !== wrapper) w.classList.remove('open');
+        });
+      }
+    }
+
+    row.addEventListener('click', toggle);
+    row.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') toggle(); });
+
+    wrapper.appendChild(row);
+    wrapper.appendChild(detail);
+    container.appendChild(wrapper);
   }
 }
 

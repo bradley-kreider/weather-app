@@ -443,16 +443,28 @@ header {
   margin-top: 4px;
 }
 
-.day-row {
-  background: var(--surface);
-  border: 1px solid var(--border);
+.day-wrapper {
   border-radius: var(--radius);
+  overflow: hidden;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  transition: border-color 0.2s;
+}
+.day-wrapper.open {
+  border-color: var(--accent);
+}
+
+.day-row {
   padding: 14px 18px;
   display: grid;
-  grid-template-columns: 80px 1fr auto auto;
+  grid-template-columns: 72px 1fr auto auto auto;
   align-items: center;
   gap: 8px;
+  cursor: pointer;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
 }
+.day-row:active { opacity: 0.7; }
 
 .day-name {
   font-size: 0.9rem;
@@ -465,6 +477,7 @@ header {
   font-size: 0.78rem;
   color: var(--accent);
   text-align: right;
+  min-width: 28px;
 }
 
 .day-temps {
@@ -475,6 +488,49 @@ header {
 
 .day-hi { font-weight: 600; }
 .day-lo { color: var(--muted); }
+
+.day-chevron {
+  color: var(--muted);
+  font-size: 1.1rem;
+  transition: transform 0.2s;
+  line-height: 1;
+}
+.day-wrapper.open .day-chevron { transform: rotate(90deg); }
+
+/* Accordion detail panel */
+.day-detail {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease;
+}
+.day-wrapper.open .day-detail {
+  max-height: 600px;
+}
+
+.day-hourly {
+  border-top: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+}
+
+.day-hour-row {
+  display: grid;
+  grid-template-columns: 44px 28px 42px 1fr 54px 36px;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 18px;
+  font-size: 0.85rem;
+  border-bottom: 1px solid var(--border);
+}
+.day-hour-row:last-child { border-bottom: none; }
+
+.dh-time { color: var(--muted); font-size: 0.78rem; }
+.dh-icon { font-size: 1.1rem; }
+.dh-temp { font-weight: 600; }
+.dh-feels { color: var(--muted); font-size: 0.78rem; }
+.dh-wind { color: var(--muted); font-size: 0.78rem; text-align: right; }
+.dh-rain { color: var(--muted); font-size: 0.78rem; text-align: right; }
+.dh-rain.has-rain { color: var(--accent); }
 
 /* Footer */
 footer {
