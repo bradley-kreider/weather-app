@@ -1,5 +1,5 @@
-const CACHE = 'weather-v2';
-const SHELL = ['/', '/index.html', '/style.css', '/app.js', '/manifest.json'];
+const CACHE = 'weather-v3';
+const SHELL = ['./', './index.html', './style.css', './app.js', './manifest.json'];
 
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(SHELL)));
