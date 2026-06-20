@@ -26,9 +26,30 @@
     <div id="main" class="screen">
       <!-- Header -->
       <header>
-        <div id="location-name">—</div>
+        <div class="header-top">
+          <div id="location-name">—</div>
+          <button id="locations-btn" aria-label="Manage locations">&#9776;</button>
+        </div>
         <div id="last-updated">—</div>
       </header>
+
+      <!-- Location drawer -->
+      <div id="loc-drawer" class="loc-drawer" aria-hidden="true">
+        <div class="loc-drawer-inner">
+          <div class="loc-drawer-header">
+            <span>Locations</span>
+            <button id="loc-close-btn" aria-label="Close">✕</button>
+          </div>
+          <div class="loc-search-row">
+            <input id="loc-search" type="text" placeholder="Search city…" autocomplete="off" />
+            <button id="loc-search-btn">Search</button>
+          </div>
+          <div id="loc-results" class="loc-results"></div>
+          <div class="loc-saved-label">Saved Locations</div>
+          <div id="loc-saved" class="loc-saved"></div>
+        </div>
+      </div>
+      <div id="loc-overlay" class="loc-overlay"></div>
 
       <!-- Current conditions -->
       <section class="current">
