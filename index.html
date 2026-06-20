@@ -11,6 +11,24 @@
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
+  <!-- Location drawer — lives outside screens so it's always accessible -->
+  <div id="loc-drawer" class="loc-drawer" aria-hidden="true">
+    <div class="loc-drawer-inner">
+      <div class="loc-drawer-header">
+        <span>Locations</span>
+        <button id="loc-close-btn" aria-label="Close">✕</button>
+      </div>
+      <div class="loc-search-row">
+        <input id="loc-search" type="text" placeholder="Search city…" autocomplete="off" />
+        <button id="loc-search-btn">Search</button>
+      </div>
+      <div id="loc-results" class="loc-results"></div>
+      <div class="loc-saved-label">Saved Locations</div>
+      <div id="loc-saved" class="loc-saved"></div>
+    </div>
+  </div>
+  <div id="loc-overlay" class="loc-overlay"></div>
+
   <div id="app">
     <div id="loading" class="screen active">
       <div class="spinner"></div>
@@ -20,7 +38,10 @@
     <div id="error" class="screen">
       <div class="error-icon">⚠</div>
       <p id="error-msg">Something went wrong.</p>
-      <button id="retry-btn">Try Again</button>
+      <div class="error-actions">
+        <button id="retry-btn">Try Again</button>
+        <button id="add-location-btn">Add Location Manually</button>
+      </div>
     </div>
 
     <div id="main" class="screen">
@@ -32,24 +53,6 @@
         </div>
         <div id="last-updated">—</div>
       </header>
-
-      <!-- Location drawer -->
-      <div id="loc-drawer" class="loc-drawer" aria-hidden="true">
-        <div class="loc-drawer-inner">
-          <div class="loc-drawer-header">
-            <span>Locations</span>
-            <button id="loc-close-btn" aria-label="Close">✕</button>
-          </div>
-          <div class="loc-search-row">
-            <input id="loc-search" type="text" placeholder="Search city…" autocomplete="off" />
-            <button id="loc-search-btn">Search</button>
-          </div>
-          <div id="loc-results" class="loc-results"></div>
-          <div class="loc-saved-label">Saved Locations</div>
-          <div id="loc-saved" class="loc-saved"></div>
-        </div>
-      </div>
-      <div id="loc-overlay" class="loc-overlay"></div>
 
       <!-- Current conditions -->
       <section class="current">

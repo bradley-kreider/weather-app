@@ -52,15 +52,28 @@ html, body {
 @keyframes spin { to { transform: rotate(360deg); } }
 
 .error-icon { font-size: 2.5rem; }
-#retry-btn {
+.error-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
   margin-top: 8px;
+}
+#retry-btn, #add-location-btn {
   padding: 10px 28px;
-  background: var(--accent);
-  color: #fff;
   border: none;
   border-radius: 999px;
   font-size: 0.95rem;
   cursor: pointer;
+}
+#retry-btn {
+  background: var(--accent);
+  color: #fff;
+}
+#add-location-btn {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--text);
 }
 
 /* Header */

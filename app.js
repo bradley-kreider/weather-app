@@ -409,6 +409,7 @@ async function init() {
 }
 
 $('retry-btn').addEventListener('click', init);
+$('add-location-btn').addEventListener('click', openDrawer);
 
 // Refresh weather (not location) when tab becomes visible again
 document.addEventListener('visibilitychange', () => {
