@@ -80,7 +80,6 @@ function closeSheet() {
   locResults.innerHTML = '';
 }
 
-$('add-btn').addEventListener('click', openSheet);
 $('add-location-btn').addEventListener('click', openSheet);
 $('loc-close-btn').addEventListener('click', closeSheet);
 sheetOverlay.addEventListener('click', closeSheet);
@@ -178,8 +177,14 @@ function buildPanel(loc, data, locIdx) {
 
   panel.innerHTML = `
     <div class="panel-header">
-      <div class="panel-loc">${loc.name}</div>
-      <div class="panel-updated">Updated ${new Date().toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'})}</div>
+      <div class="panel-header-left">
+        <div class="panel-loc">${loc.name}</div>
+        <div class="panel-updated">Updated ${new Date().toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'})}</div>
+      </div>
+      <div class="panel-header-right">
+        <div class="city-dots" data-dots></div>
+        <button id="add-btn" aria-label="Add location">+</button>
+      </div>
     </div>
     <section class="current">
       <div class="current-top">
@@ -279,13 +284,19 @@ function goTo(idx, animate=true) {
 
 function updateDots() {
   const locs = allLocations();
-  const container = $('city-dots');
-  container.innerHTML = '';
-  locs.forEach((loc,i) => {
-    const dot = document.createElement('div');
-    dot.className = 'city-dot' + (loc.isGPS?' gps':'') + (i===currentIdx?' active':'');
-    dot.addEventListener('click', ()=>goTo(i));
-    container.appendChild(dot);
+  // Update every panel's dot container and wire its + button
+  track.querySelectorAll('[data-dots]').forEach(container => {
+    container.innerHTML = '';
+    locs.forEach((loc,i) => {
+      const dot = document.createElement('div');
+      dot.className = 'city-dot' + (loc.isGPS?' gps':'') + (i===currentIdx?' active':'');
+      dot.addEventListener('click', ()=>goTo(i));
+      container.appendChild(dot);
+    });
+  });
+  // Wire + buttons (each panel has one)
+  track.querySelectorAll('#add-btn').forEach(btn => {
+    btn.onclick = openSheet;
   });
 }
 

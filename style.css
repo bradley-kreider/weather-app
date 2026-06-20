@@ -74,18 +74,7 @@ body {
 }
 
 /* ── Top bar ────────────────────────────────────────────────────────── */
-.top-bar {
-  position: fixed;
-  top: 0; left: 50%; transform: translateX(-50%);
-  width: 100%; max-width: 480px;
-  z-index: 5;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 52px 20px 12px;
-  gap: 10px;
-}
-
+/* top-bar is now inside each panel header — no fixed overlay needed */
 .city-dots {
   display: flex;
   gap: 6px;
@@ -114,7 +103,7 @@ body {
   color: #fff;
   font-size: 1.3rem;
   line-height: 1;
-  width: 28px; height: 28px;
+  width: 26px; height: 26px;
   border-radius: 50%;
   cursor: pointer;
   display: flex;
@@ -122,6 +111,7 @@ body {
   justify-content: center;
   padding: 0;
   transition: background 0.15s;
+  flex-shrink: 0;
 }
 #add-btn:active { background: rgba(255,255,255,0.22); }
 
@@ -164,13 +154,37 @@ body {
 
 /* ── Header inside panel ────────────────────────────────────────────── */
 .panel-header {
-  padding: 100px 24px 8px;
+  padding: env(safe-area-inset-top, 16px) 20px 12px;
+  padding-top: max(env(safe-area-inset-top, 16px), 16px);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.panel-header-left {
   display: flex;
   flex-direction: column;
   gap: 2px;
+  min-width: 0;
 }
-.panel-loc { font-size: 1.25rem; font-weight: 600; }
-.panel-updated { font-size: 0.75rem; color: var(--muted); }
+
+.panel-loc {
+  font-size: 1.2rem;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.panel-updated { font-size: 0.72rem; color: var(--muted); }
+
+.panel-header-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
 
 /* ── Current conditions ─────────────────────────────────────────────── */
 .current { padding: 8px 24px 24px; }
