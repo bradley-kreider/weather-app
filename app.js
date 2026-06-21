@@ -27,9 +27,8 @@ function formatHour(iso) {
   if(h===0) return '12am'; if(h===12) return '12pm';
   return h<12?`${h}am`:`${h-12}pm`;
 }
-function formatDay(iso,i) {
-  if(i===0) return 'Today'; if(i===1) return 'Tomorrow';
-  return new Date(iso).toLocaleDateString('en-US',{weekday:'short'});
+function formatDay(iso) {
+  return new Date(iso + 'T12:00:00').toLocaleDateString('en-US', { weekday: 'short' });
 }
 
 // ── Storage ────────────────────────────────────────────────────────────────
@@ -238,7 +237,7 @@ function buildPanel(loc, data, locIdx) {
     wrap.className = 'day-wrapper';
     wrap.innerHTML = `
       <div class="day-row" role="button" tabindex="0">
-        <div class="day-name">${formatDay(t,i)}</div>
+        <div class="day-name">${formatDay(t)}</div>
         <div class="day-icon">${dw.emoji}</div>
         <div class="day-rain">${rain>0?rain+'%':''}</div>
         <div class="day-temps"><span class="day-hi">${Math.round(data.daily.temperature_2m_max[i])}°</span><span class="day-lo">${Math.round(data.daily.temperature_2m_min[i])}°</span></div>
